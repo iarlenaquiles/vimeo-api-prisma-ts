@@ -11,13 +11,9 @@ class PostController {
                         id: true,
                         email: true
                     }
-                }
+                },
+                video: true
             },
-            where: {
-                authorId: {
-                    gt: 3
-                }
-            }
         });
 
         return res.json({ posts });

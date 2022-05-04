@@ -1,11 +1,11 @@
-import makeReq from "./makeRequest";
+import api from '../services/api';
 
 async function fetchFromVimeo(id: string) {
     const key = process.env.VIMEO_API_KEY;
     console.log(key);
     console.log(id);
-    const url = `https://api.vimeo.com/videos/${id}?access_token=${key}`;
-    return makeReq(url);
+    const response = await api.get(`/videos/${id}?access_token=${key}`);
+    return response;
 }
 
 async function getVimeoVideo(id: string) {

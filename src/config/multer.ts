@@ -1,19 +1,18 @@
-import crypto from 'crypto';
-import path, { extname } from 'path';
 import multer from 'multer';
+import path from 'path';
 
 const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
-export default {
-    local: {
-        storage: multer.diskStorage({
-            destination: path.join(tmpFolder, 'video'),
-            filename(_request, file, callback) {
-                const fileHash = crypto.randomBytes(10).toString('hex');
-                const fileName = `${fileHash}${extname(file.originalname)}`;
-                return callback(null, fileName);
-            },
-        }),
-    },
-};
 
+const storage = multer.diskStorage({
+    destination: function (_req, _file, cb) {
+        cb(null, tmpFolder);
+    },
+    filename: function (_req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const uploads = multer({ storage: storage });
+
+export default uploads;
 

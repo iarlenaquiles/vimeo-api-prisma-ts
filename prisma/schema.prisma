@@ -25,6 +25,16 @@ model Post {
   author User @relation(fields: [authorId], references: [id])
   title String
   content String
+  video Video?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Video { 
+  id Int @id @default(autoincrement())
+  postId Int
+  post Post @relation(fields: [postId], references: [id])
+  uri String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
