@@ -60,15 +60,15 @@ class VideoController {
         });
         let link = '';
         if (video) {
-            client.request(video.uri + '?fields=link', function (error, body, _statusCode, _headers) {
+            client.request(video.uri + '?fields=link', async function (error, body, _statusCode, _headers) {
                 if (error) {
                     console.log('There was an error making the request.');
                     console.log('Server reported: ' + error);
                     return
                 }
-                link = body.link;
-                console.log('Your video link is: ' + body.link);
-                return link;
+                link = body;
+                console.log('Your video link is: ' + body);
+                return body;
             });
 
             return res.json({ link });
@@ -95,27 +95,15 @@ class VideoController {
                 }
             });
         }
-        return res.json({  });
+        return res.json({});
     }
     async details(req: Request, res: Response) {
         if (typeof req.query.q === "string") {
             const result = await getVideo(req.query.q);
-            console.log('################', result?.data)
-
-            const {
-                uri,
-                name,
-                link,
-                description,
-                tags,
-                pictures
-
-            } = result?.data;
+            console.log('################', result?.data);       
 
             return res.json({
-                uri, name, link, description,
-                tags,
-                pictures
+               video: result?.data
             });
         }
         return res.json(null);

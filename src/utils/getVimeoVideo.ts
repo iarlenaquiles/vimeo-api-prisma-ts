@@ -4,7 +4,13 @@ async function fetchFromVimeo(id: string) {
     const key = process.env.VIMEO_API_KEY;
     console.log(key);
     console.log(id);
-    const response = await api.get(`/videos/${id}?access_token=${key}`);
+    const config = {
+        headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': `application/json`,
+        'Accept': `application/vnd.vimeo.*+json;version=3.4`
+    }};
+    const response = await api.get(`/videos/${id}`, config);
     return response;
 }
 
