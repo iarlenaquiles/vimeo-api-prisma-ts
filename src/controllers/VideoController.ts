@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import getVideo from "../utils/getVideo";
 import getAccessToken from '../services/getAccessToken';
+import getTagsByVideo from '../services/getTagsByVideo';
+import addTag from '../services/addTagToAVideo';
 
 import { Vimeo } from 'vimeo';
 const prisma = new PrismaClient();
@@ -98,15 +100,23 @@ class VideoController {
         return res.json({});
     }
     async details(req: Request, res: Response) {
-        if (typeof req.query.q === "string") {
-            const result = await getVideo(req.query.q);
-            console.log('################', result?.data);       
+        try {
+            if (typeof req.query.q === "string") {
+                const result = await getVideo(req.query.q);
+                // console.log('################', result?.data);       
 
-            return res.json({
-               video: result?.data
-            });
+                const { uri } = result?.data;
+                const uriParsed = uri.split('/')[2];
+                console.log(uriParsed)
+                await addTag(uriParsed, 'teste');
+                return res.json({
+                    video: result?.data
+                });
+            }
+            return res.json(null);
+        } catch (error) {
+            return res.status(400).json({ error });
         }
-        return res.json(null);
     }
 
     async getAccessToken(_req: Request, res: Response) {
@@ -116,6 +126,18 @@ class VideoController {
         } catch (error) {
             return res.status(400).json({ error });
         }
+    }
+
+    async getAllTagsByVideo(req: Request, res: Response) {
+        if (typeof req.query.q === "string") {
+            const result = await getTagsByVideo(req.query.q);
+            console.log('################', result?.data);
+
+            return res.json({
+                video: result?.data
+            });
+        }
+        return res.json(null);
     }
 }
 
